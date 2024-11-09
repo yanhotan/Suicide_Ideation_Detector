@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+dist/
+# Angular specific
+.angular/
+# IDE and editor-specific files
+.vscode/
+.idea/
+*.sublime-workspace
+# Misc
+*.log
+*.bak
+*.tmp

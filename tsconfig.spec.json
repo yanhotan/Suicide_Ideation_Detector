@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+      "outDir": "../out-tsc/spec",
+      "types": ["jasmine", "node"]  // Ensure "jasmine" is included here
+    },
+    "files": [
+      "polyfills.ts"
+    ],
+    "include": [
+      "**/*.spec.ts",
+      "**/*.d.ts"
+    ]
+  }
+  

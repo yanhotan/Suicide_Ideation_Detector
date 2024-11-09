@@ -1,0 +1,6 @@
+# This file is used by the build system to adjust CSS and JS output based on the browsers specified below.
+
+> 0.5%
+last 2 versions
+Firefox ESR
+not dead
