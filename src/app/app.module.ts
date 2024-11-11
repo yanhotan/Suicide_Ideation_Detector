@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import { PredictorComponent } from './predictor/predictor.component';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule } from '@angular/forms';  // Import FormsModule
+import { PredictionService } from './prediction.service';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,7 @@ import { FormsModule } from '@angular/forms';  // Import FormsModule
     HttpClientModule,
     FormsModule  // Include FormsModule
   ],
-  providers: [],
+  providers: [PredictionService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

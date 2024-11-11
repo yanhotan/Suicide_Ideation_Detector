@@ -1,14 +1,10 @@
 <div class="container">
   <h1>Suicide Ideation Detector</h1>
-  <input
-    type="text"
-    [(ngModel)]="inputText"
-    (keydown.enter)="makePrediction()"
-    placeholder="Enter your text here"
-    class="input-field"
-  />
-  <button (click)="makePrediction()" class="submit-button">Submit</button>
-  <div *ngIf="prediction" class="prediction-output">
-    <p>Prediction Result: {{ prediction }}</p>
-  </div>
+  <select [(ngModel)]="selectedModel">
+    <option value="gru">GRU Model</option>
+    <option value="gemini">Gemini Model</option>
+  </select>
+  <textarea [(ngModel)]="inputText" placeholder="Enter text here"></textarea>
+  <button (click)="makePrediction()">Submit</button>
+  <p *ngIf="prediction">Prediction: {{ prediction }}</p> 
 </div>

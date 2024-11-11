@@ -1,3 +1,4 @@
+/* predictor.component.css */
 body {
   background-color: #121212;
   color: #ffffff;
@@ -16,9 +17,10 @@ body {
 h1 {
   text-align: center;
   margin-bottom: 20px;
+  color: #ffffff;
 }
 
-.input-field {
+select {
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
@@ -26,13 +28,31 @@ h1 {
   border-radius: 5px;
   background-color: #2c2c2c;
   color: #ffffff;
+  cursor: pointer;
 }
 
-.input-field::placeholder {
+select:focus {
+  outline: none;
+  border: 1px solid #6200ee;
+}
+
+textarea {
+  width: 100%;
+  height: 100px;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #2c2c2c;
+  color: #ffffff;
+  resize: vertical;
+}
+
+textarea::placeholder {
   color: #aaaaaa;
 }
 
-.submit-button {
+button {
   width: 100%;
   padding: 10px;
   background-color: #6200ee;
@@ -43,13 +63,15 @@ h1 {
   font-size: 16px;
 }
 
-.submit-button:hover {
+button:hover {
   background-color: #3700b3;
 }
 
-.prediction-output {
+p {
   margin-top: 20px;
   padding: 15px;
   background-color: #2c2c2c;
   border-radius: 5px;
+  color: #ffffff;
+  word-wrap: break-word;
 }

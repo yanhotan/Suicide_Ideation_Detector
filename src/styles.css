@@ -1,55 +1,14 @@
 body {
-  background-color: #121212;
-  color: #ffffff;
-  font-family: 'Arial', sans-serif;
-}
-
-.container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  background-color: #1e1e1e;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-h1 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-.input-field {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: none;
-  border-radius: 5px;
-  background-color: #2c2c2c;
-  color: #ffffff;
-}
-
-.input-field::placeholder {
-  color: #aaaaaa;
-}
-
-.submit-button {
-  width: 100%;
-  padding: 10px;
-  background-color: #6200ee;
-  color: #ffffff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.submit-button:hover {
-  background-color: #3700b3;
-}
-
-.prediction-output {
-  margin-top: 20px;
-  padding: 15px;
-  background-color: #2c2c2c;
-  border-radius: 5px;
-}
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+  }
+  
+  h1, h2 {
+    color: #333;
+  }
+  
+  button {
+    cursor: pointer;
+  }
+  
