@@ -56,7 +56,8 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "suicide-ideation-detector:build"
+            "browserTarget": "suicide-ideation-detector:build",
+            "proxyConfig": "proxy.conf.json"
           },
           "configurations": {
             "production": {
