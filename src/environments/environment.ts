@@ -1,5 +1,5 @@
 export const environment = {
   production: false,
-  apiUrl: 'https://29f6-34-139-207-95.ngrok-free.app/chat',
+  apiUrl: 'https://4e4e-35-202-121-196.ngrok-free.app/chat',
   geminiApiKey: 'AIzaSyAOvBmOtELiy38PHZu3ETgbU3P0xqemB04'
 };
