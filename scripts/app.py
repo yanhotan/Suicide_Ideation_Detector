@@ -2,17 +2,8 @@ import re
 import streamlit as st
 import requests
 
-def get_ngrok_url_from_environment(file_path):
-    with open(file_path, 'r') as file:
-        content = file.read()
-        match = re.search(r"apiUrl: '(https?://.*?)'", content)
-        if match:
-            return match.group(1)
-    return None
-
-# Retrieve Ngrok URL dynamically
-environment_file = "src/environments/environment.ts"
-api_url = get_ngrok_url_from_environment(environment_file)
+# Ngrok URL (use dynamic retrieval if preferred)
+api_url = 'https://74e2-35-194-144-131.ngrok-free.app/chat'
 
 st.title("Web App Predictor")
 
@@ -20,16 +11,24 @@ st.title("Web App Predictor")
 user_input = st.text_input("Enter your input text:")
 
 # Dropdown for model selection
-model = st.selectbox("Select Model", ["gru", "gemini"])
+model = st.selectbox("Select Model", ["GRU", "LR"])
 
 if st.button("Get Prediction"):
-    if model == "gru":
-        response = requests.post(f"{api_url}/chat", json={"model": model, "message": user_input})
-    elif model == "gemini":
-        gemini_api_url = "http://localhost:5000/api/generate"
-        response = requests.post(gemini_api_url, json={"prompt": user_input})
-
-    if response.status_code == 200:
-        st.write("Prediction:", response.json().get("response", "No response received."))
+    if not api_url:
+        st.error("API URL not available. Check your setup.")
     else:
-        st.error("Error in API call:", response.text)
+        # Construct payload
+        payload = {"model": model.lower(), "message": user_input}
+
+        try:
+            # Send POST request to the backend
+            response = requests.post(api_url, json=payload)
+
+            if response.status_code == 200:
+                response_data = response.json()
+                st.write("Prediction:", response_data.get("response", "No response received."))
+            else:
+                st.error(f"Error in API call: {response.text}")
+
+        except requests.exceptions.RequestException as e:
+            st.error(f"Request failed: {e}")

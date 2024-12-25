@@ -6,6 +6,11 @@
       "pathRewrite": {
         "^/gemini-api": ""
       }
+    },
+    "/chat": {
+      "target": "https://<ngrok-url>",
+      "secure": false,
+      "changeOrigin": true
     }
   }
   

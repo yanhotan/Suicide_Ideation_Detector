@@ -19,21 +19,21 @@ export class PredictorComponent {
     this.loadPrompt();
   }
 
+  // Load the static prompt template from a local file
   loadPrompt(): void {
     this.http.get('assets/prompt.txt', { responseType: 'text' })
-      .pipe(
-        catchError(error => {
-          console.error('Error loading prompt file:', error);
-          return of(''); // Return empty string on error
-        })
-      )
+      .pipe(catchError(error => {
+        console.error('Error loading prompt file:', error);
+        return of(''); // Return empty string on error
+      }))
       .subscribe(data => {
         this.promptTemplate = data || '';
-        console.log('Prompt loaded successfully:', this.promptTemplate);
+        console.log('Prompt loaded successfully:', this.promptTemplate); // Log the prompt contents
       });
   }
 
-  makePrediction(): void {
+  // Make predictions using the selected model
+  async makePrediction(): Promise<void> {
     console.log('Selected Model:', this.selectedModel);
     console.log('Input Text:', this.inputText);
 
@@ -42,53 +42,40 @@ export class PredictorComponent {
       return;
     }
 
-    if (this.selectedModel === 'gru' || this.selectedModel === 'lr') {
-      this.fetchPredictionFromBackend(this.selectedModel);
-    } else if (this.selectedModel === 'gemini') {
-      this.fetchPredictionFromGemini();
+    if (this.selectedModel === 'gemini') {
+      // try {
+      //   // Use the Gemini API
+      //   const { GoogleGenerativeAI } = await import('@google/generative-ai');
+      //   const apiKey = 'YOUR_API_KEY'; // Replace with your Gemini API key
+      //   const genAI = new GoogleGenerativeAI(apiKey);
+      //   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+
+      //   const prompt = this.promptTemplate + `\nUser Input: ${this.inputText}`; // Append user input to the prompt
+      //   const result = await model.generateContent(prompt);
+
+      //   console.log('Response received from Gemini:', result);
+      //   this.prediction = result.response.text || 'No response received from Gemini.';
+      // } catch (error) {
+      //   console.error('Error calling Gemini API:', error);
+      //   this.prediction = 'An error occurred while fetching the prediction from Gemini.';
+      // }
+    } else {
+      const apiUrl = environment.apiUrl; // Base API URL from environment
+
+      const payload = { model: this.selectedModel, message: this.inputText };
+
+      this.http.post<any>(apiUrl, payload).pipe(
+        catchError(error => {
+          console.error(`Error fetching from ${this.selectedModel.toUpperCase()}:`, error);
+          this.prediction = `An error occurred while fetching the prediction from ${this.selectedModel.toUpperCase()}.`;
+          return of(null);
+        })
+      ).subscribe(response => {
+        if (response) {
+          console.log(`Response received from ${this.selectedModel.toUpperCase()}:`, response);
+          this.prediction = response.response || `No response received from ${this.selectedModel.toUpperCase()}.`;
+        }
+      });
     }
-  }
-
-  private fetchPredictionFromBackend(model: string): void {
-    const apiUrl = `${environment.apiUrl}/${model}`; // Assuming separate endpoints per model
-    const payload = { message: this.inputText };
-
-    this.http.post<any>(apiUrl, payload).pipe(
-      catchError(error => {
-        console.error(`Error fetching from ${model}:`, error);
-        this.prediction = `An error occurred while fetching the prediction from ${model}.`;
-        return of(null);
-      })
-    ).subscribe(response => {
-      if (response) {
-        console.log(`Response received from ${model}:`, response);
-        this.prediction = response.response || `No response received from ${model}.`;
-      }
-    });
-  }
-
-  private fetchPredictionFromGemini(): void {
-    const geminiApiUrl = 'http://localhost:5000/api/generate'; // Replace with the actual Gemini server endpoint
-    const headers = new HttpHeaders({
-      'Authorization': `Bearer ${environment.geminiApiKey}`, // API key from environment
-      'Content-Type': 'application/json'
-    });
-
-    // Construct the prompt with the template and input text
-    const prompt = `${this.promptTemplate}\nUser Input: ${this.inputText}`;
-    const payload = { prompt };
-
-    this.http.post<any>(geminiApiUrl, payload, { headers }).pipe(
-      catchError(error => {
-        console.error('Error fetching from Gemini:', error);
-        this.prediction = 'An error occurred while fetching the prediction from Gemini.';
-        return of(null);
-      })
-    ).subscribe(response => {
-      if (response) {
-        console.log('Response received from Gemini:', response);
-        this.prediction = response.response || 'No response received from Gemini.';
-      }
-    });
   }
 }
