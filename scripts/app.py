@@ -23,16 +23,16 @@ nltk.download('omw-1.4')  # for extended WordNet support
 # ---------------------
 
 # 1) Load GRU Model & Tokenizer
-GRU_MODEL_PATH = "gru_model.keras"  # adjust path if needed
-TOKENIZER_PATH = "tokenizer.pkl"    # adjust path if needed
+GRU_MODEL_PATH = "./suicide_detection_GRU_Sentiment.keras"  
+TOKENIZER_PATH = "./tokenizer.pkl"    
 
 gru_model = load_model(GRU_MODEL_PATH)
 with open(TOKENIZER_PATH, "rb") as f:
     tokenizer = pickle.load(f)
 
 # 2) Load Logistic Regression Model & TF-IDF Vectorizer
-LR_MODEL_PATH = "logistic_regression_sentiment_fine_tuned.pkl"
-VECTORIZER_PATH = "tfidf_vectorizer_sentiment.pkl"
+LR_MODEL_PATH = "./logistic_regression_sentiment_fine_tuned.pkl"
+VECTORIZER_PATH = "./tfidf_vectorizer_sentiment.pkl"
 
 with open(LR_MODEL_PATH, "rb") as f:
     lr_model = pickle.load(f)
