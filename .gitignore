@@ -1,13 +1,19 @@
-# Dependencies
+# Node.js dependencies
 node_modules/
 dist/
-# Angular specific
+
+# Angular-specific cache/build artifacts
 .angular/
+
+# Python virtual environment
+.venv/
+
 # IDE and editor-specific files
 .vscode/
 .idea/
 *.sublime-workspace
-# Misc
+
+# Misc / Temporary files
 *.log
 *.bak
 *.tmp
