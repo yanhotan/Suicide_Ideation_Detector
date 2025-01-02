@@ -33,29 +33,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-
     color: white !important;
 }
 
-/* Sidebar background color */
-[data-testid="stSidebar"] {
-    background-color: black !important;  /* Black sidebar */
-}
-
-/* Sidebar heading in green */
-.sidebar-menu-heading {
-    color: #00d08e !important;  /* Green color */
-    font-size: 1.5rem !important;
-    margin-bottom: 0.5rem;
-}
-
-/* Radio button labels default to white */
-[data-baseweb="radio"] > label > div {
-    color: white !important;
-}
-
-/* Highlight the selected radio option in green */
-[data-baseweb="radio"] > label[data-selected="true"] > div {
-    color: #00d08e !important;
-    font-weight: bold;
-}
-
+            
 /* Title styling */
 .main-title {
     font-size: 3rem;
@@ -148,21 +126,72 @@ div.stButton button:hover {
 """, unsafe_allow_html=True)
 
 # We'll use a radio button or selectbox for navigation between pages
+st.markdown("""
+<style>
+/* Overall black background (main area + sidebar) */
+html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-testid="stToolbar"] {
+    background-color: black !important;
+    color: white !important;
+}
+
+/* Sidebar container styling */
+[data-testid="stSidebar"] {
+    background-color: #111111 !important; /* Very dark gray */
+    color: #D4D4D4 !important; /* Light gray text */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern font */
+    padding: 20px !important; /* Inner padding */
+}
+
+/* Sidebar heading */
+.sidebar-menu-heading {
+    font-size: 2rem !important; /* Larger font for heading */
+    font-weight: bold !important; /* Bold heading */
+    color: #00d08e !important; /* White color */
+    margin-bottom: 20px; /* Spacing below heading */
+}
+
+/* Sidebar button styles (with reduced gap and no border) */
+[data-testid="stSidebar"] div.stButton > button {
+    background-color: black !important; /* Black background */
+    color: white !important; /* White text */
+    font-size: 1.2rem !important; /* Larger font size */
+    font-weight: bold !important; /* Bold text */
+    border: none !important; /* Remove border */
+    border-radius: 10px !important; /* Rounded corners */
+    padding: 10px 20px !important; /* Add padding for click area */
+    margin-bottom: 8px !important; /* Reduced spacing between buttons */
+    transition: all 0.3s ease-in-out; /* Smooth hover effect */
+}
+
+/* Hover effect for sidebar buttons */
+[data-testid="stSidebar"] div.stButton > button:hover {
+    background-color: white !important; /* White background on hover */
+    color: black !important; /* Black text on hover */
+    transform: scale(1.03); /* Slight scaling effect on hover */
+}
+</style>
+""", unsafe_allow_html=True)
+
+# Sidebar Menu Header
 st.sidebar.markdown("<div class='sidebar-menu-heading'>Menu</div>", unsafe_allow_html=True)
-page = st.sidebar.radio("", ("Suicide Ideation Detector", "About"))
 
-if page == "Suicide Ideation Detector":
+# Sidebar Navigation Buttons
+if "page" not in st.session_state:
+    st.session_state.page = "detector"  # Default page
 
-    # Main Title
+if st.sidebar.button("Suicide Ideation Detector", key="detector_button"):
+    st.session_state.page = "detector"
+
+if st.sidebar.button("About", key="about_button"):
+    st.session_state.page = "about"
+
+# Display Content Based on Navigation
+if st.session_state.page == "detector":
     st.markdown('<div class="main-title">Suicide Ideation Predictor</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-text">Predict text with selected models: GRU or LR</div>', unsafe_allow_html=True)
 
-    # Input Section
     st.write("### Input Section")
     user_input = st.text_input("Enter your input text:", placeholder="Type something here...")
-
-    # Model Selection Dropdown
-    st.write("### Model Selection")
     model = st.selectbox("Select Model:", ["GRU", "LR"])
 
     # Prediction Button and Output Section
@@ -193,30 +222,110 @@ if page == "Suicide Ideation Detector":
 #############################
 #       ABOUT PAGE
 #############################
-elif page == "About":
-    # Use inline HTML in Markdown to color the headings green (#00d08e).
-    st.markdown("<h2 style='color:#00d08e;'>About This App</h2>", unsafe_allow_html=True)
-    st.write("""
-    **Suicide Ideation Predictor** is a Streamlit application that uses two models (GRU and LR)
-    to classify text inputs into either *Suicide Ideation* or *Non-Suicide*.
-    """)
+elif st.session_state.page == "about":
+    st.markdown("""
+    <style>
+    /* Overall background */
+    html, body, [data-testid="stAppViewContainer"] {
+        background-color: black !important;
+        color: white !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-    st.markdown("<h3 style='color:#00d08e;'>How to Use</h3>", unsafe_allow_html=True)
-    st.write("""
-    1. Go to **Suicide Ideation Detector** (in the navigation sidebar).
-    2. Type in the text you want to analyze.
-    3. Select a model (GRU or LR).
-    4. Click **Get Prediction** to see the result.
-    """)
+    /* Sidebar container styling */
+    [data-testid="stSidebar"] {
+        background-color: #1E1E1E !important;
+        color: #D4D4D4 !important;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding: 20px !important;
+    }
 
-    st.markdown("<h3 style='color:#00d08e;'>Disclaimer</h3>", unsafe_allow_html=True)
-    st.write("""
-    This application is intended for **demonstration** and **educational** purposes.
-    It is **not** a substitute for professional mental health evaluation.
-    """)
+    /* Sidebar buttons */
+    [data-testid="stSidebar"] div.stButton > button {
+        background-color: black !important;
+        color: white !important;
+        font-size: 1.2rem !important;
+        font-weight: bold !important;
+        border: none !important;
+        border-radius: 10px !important;
+        padding: 10px 20px !important;
+        margin-bottom: 8px !important;
+        transition: all 0.3s ease-in-out;
+    }
 
-    st.markdown("<h3 style='color:#00d08e;'>Contact / More Info</h3>", unsafe_allow_html=True)
-    st.write("""
-    - **Repository**: [GitHub](https://github.com/yanhotan)
-    - **Author**: TAN YAN HO
-    """)
+    [data-testid="stSidebar"] div.stButton > button:hover {
+        background-color: white !important;
+        color: black !important; /* Ensure text is black on hover */
+        transform: scale(1.03);
+    }
+
+    /* About page headings */
+    h1.about-heading {
+        color: #00d08e !important; /* Green for main heading */
+        font-weight: bold !important;
+        margin-top: 20px !important;
+        margin-bottom: 10px !important;
+    }
+
+    h2.about-subheading, h3.about-subheading {
+        color: white !important; /* White for smaller headings */
+        font-weight: bold !important;
+        margin-top: 15px !important;
+        margin-bottom: 8px !important;
+    }
+
+    /* Green and bold */
+    .about-content em {
+        font-style: normal !important;
+        color: #00d08e !important; /* Green color */
+        font-weight: bold !important; /* Bold for emphasis */
+    }
+
+    /* Hyperlinks */
+    div[data-testid="stAppViewContainer"] a {
+        color: #00d08e !important;
+        text-decoration: none !important;
+    }
+    div[data-testid="stAppViewContainer"] a:hover {
+        text-decoration: underline !important;
+    }
+    .about-content.hotline-highlight {
+    color: #00d08e !important; /* Green text */
+    font-weight: bold !important; /* Bold text */
+    font-style: normal !important; /* Normal style (not italic) */
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # About Page Content
+    st.markdown('<h1 class="about-heading">About This App</h1>', unsafe_allow_html=True)
+    st.markdown("""
+    <span class="about-content">
+    <em>Suicide Ideation Predictor</em> is a Streamlit application that uses two models (<em>GRU</em> and <em>LR</em>) 
+    to classify text inputs into either <em>Suicide Ideation</em> or <em>Non-Suicide</em>.
+    </span>
+    """, unsafe_allow_html=True)
+
+    st.markdown('<h2 class="about-subheading">How to Use</h2>', unsafe_allow_html=True)
+    st.markdown("""
+    1. Go to <span class="about-content"><em>Suicide Ideation Detector</em></span> (in the navigation sidebar).  
+    2. Type in the text you want to analyze.  
+    3. Select a model (<span class="about-content"><em>GRU</em></span> or <span class="about-content"><em>LR</em></span>).  
+    4. Click <span class="about-content"><em>Get Prediction</em></span> to see the result.
+    """, unsafe_allow_html=True)
+
+    st.markdown('<h2 class="about-subheading">Disclaimer</h2>', unsafe_allow_html=True)
+    st.markdown("""
+    This application is intended for demonstration and educational purposes.  
+    It is not a substitute for professional mental health evaluation.
+    """, unsafe_allow_html=True)
+
+    st.markdown('<h2 class="about-subheading">Contact / More Info</h2>', unsafe_allow_html=True)
+    st.markdown("""
+    - **Repository**: [GitHub](https://github.com/yanhotan)  
+    - **Author**: TAN YAN HO  
+    - <span class="about-content hotline-highlight">Hotline Information</span>: If you or someone you know needs support, please contact a suicide prevention hotline in your area:
+        - Malaysia 15999 (Talian Kasih) or <span class="about-content hotline-highlight">Befrienders KL</span>: +603-7627 2929
+        - International: [Visit Befrienders Worldwide](https://www.befrienders.org)
+    """, unsafe_allow_html=True)
+
