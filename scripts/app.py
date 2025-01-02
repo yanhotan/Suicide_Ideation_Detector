@@ -156,13 +156,11 @@ if st.button("Get Prediction", key="predict", help="Click to make a prediction")
     elif not user_input.strip():
         st.warning("Please enter a valid input text.")
     else:
-        # Construct payload
         payload = {"model": model.lower(), "message": user_input}
 
         try:
-            # Send POST request to the backend
             response = requests.post(api_url, json=payload)
-
+            # If the response is not 200, treat it as an error
             if response.status_code == 200:
                 response_data = response.json()
                 prediction = response_data.get("response", "No response received.")
@@ -171,7 +169,9 @@ if st.button("Get Prediction", key="predict", help="Click to make a prediction")
                     unsafe_allow_html=True,
                 )
             else:
-                st.error(f"Error in API call: {response.text}")
+                # Non-200 response => show token message
+                st.error("The token is now invalid please refresh and get the new api token")
 
-        except requests.exceptions.RequestException as e:
-            st.error(f"Request failed: {e}")
+        except requests.exceptions.RequestException:
+            # If there's a connection error or any requests failure
+            st.error("The token is now invalid please refresh and get the new api token")
