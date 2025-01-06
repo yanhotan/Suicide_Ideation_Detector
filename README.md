@@ -154,7 +154,7 @@ This project provides an end-to-end pipeline for detecting suicide ideation from
 | Logistic Regression   | Sentiment + Personality         | 94%      |
 | GRU Model             | Sentiment Only                  | 92%      |
 | GRU Model             | Sentiment + Personality         | 95%      |
-| Gemini                | Contextual Sentiment            | ~96%     |
+| Gemini                | Contextual Sentiment            | ~75%     |
 
 ---
 
