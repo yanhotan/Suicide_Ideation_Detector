@@ -1,4 +1,5 @@
 # Suicide Ideation Detection Using GRU, Logistic Regression, and Angular Frontend with Large Language Models Integration
+https://suicideideationdetector.streamlit.app/
 
 This project aims to detect suicide ideation from textual data using machine learning techniques and an interactive Angular-based frontend. Two models—GRU (Gated Recurrent Unit) and Logistic Regression—were used for backend predictions. The project also integrates large language models (LLMs) like **Gemini** for advanced sentiment analysis and contextual understanding.
 
