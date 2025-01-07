@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Ngrok URL
-api_url = 'https://2d89-34-71-182-162.ngrok-free.app/chat'
+api_url = 'https://a186-104-196-249-146.ngrok-free.app/chat'
 
 #############################
 #       PAGE CONFIG
@@ -119,7 +119,6 @@ div.stButton button:hover {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
-    color: #00d08e;
     margin-top: 1rem;
 }
 </style>
@@ -208,8 +207,20 @@ if st.session_state.page == "detector":
                 if response.status_code == 200:
                     response_data = response.json()
                     prediction = response_data.get("response", "No response received.")
+                    
+                    # Choose color based on "Suicide" presence
+                    # e.g., if "Suicide Ideation" is in the text => RED, else GREEN
+                    if "non-suicide" in prediction.lower():
+                        color = "#00d08e"  # green
+                    else:
+                        color = "#FF0000"  # red
+
                     st.markdown(
-                        f'<div class="prediction-box"><strong>Prediction:</strong> {prediction}</div>',
+                        f"""
+                        <div class="prediction-box" style="color:{color};">
+                            <strong>Prediction:</strong> {prediction}
+                        </div>
+                        """,
                         unsafe_allow_html=True,
                     )
                 else:
