@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Ngrok URL
-api_url = 'https://8c36-35-237-177-226.ngrok-free.app/chat'
+api_url = 'https://2d89-34-71-182-162.ngrok-free.app/chat'
 
 #############################
 #       PAGE CONFIG
