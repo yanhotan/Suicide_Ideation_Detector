@@ -234,7 +234,7 @@ elif st.session_state.page == "about":
 
     /* Sidebar container styling */
     [data-testid="stSidebar"] {
-        background-color: #1E1E1E !important;
+        background-color: #11111 !important;
         color: #D4D4D4 !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         padding: 20px !important;
