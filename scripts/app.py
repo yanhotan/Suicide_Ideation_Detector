@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Ngrok URL
-api_url = 'https://6013-34-16-253-120.ngrok-free.app/chat'
+api_url = 'https://2bc8-34-13-166-176.ngrok-free.app/chat'
 
 #############################
 #       PAGE CONFIG
@@ -186,7 +186,7 @@ if st.sidebar.button("About", key="about_button"):
 
 # Display Content Based on Navigation
 if st.session_state.page == "detector":
-    st.markdown('<div class="main-title">Suicide Ideation Predictor</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">Suicide Ideation Detector</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-text">Predict text with selected models: GRU or LR</div>', unsafe_allow_html=True)
 
     st.write("### Input Section")
@@ -194,7 +194,7 @@ if st.session_state.page == "detector":
     model = st.selectbox("Select Model:", ["GRU", "LR"])
 
     # Prediction Button and Output Section
-    if st.button("Get Prediction", key="predict", help="Click to make a prediction"):
+    if st.button("Run Detection", key="predict", help="Click to make a prediction"):
         if not api_url:
             st.error("API URL not available. Check your setup.")
         elif not user_input.strip():
