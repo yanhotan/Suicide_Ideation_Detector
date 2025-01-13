@@ -2,8 +2,8 @@ import re
 import streamlit as st
 import requests
 
-# Ngrok URL
-api_url = 'https://2bc8-34-13-166-176.ngrok-free.app/chat'
+# Ngrok URL - your Flask backend
+api_url = 'https://92b5-34-19-59-54.ngrok-free.app/chat'
 
 #############################
 #       PAGE CONFIG
@@ -33,7 +33,6 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-
     color: white !important;
 }
 
-            
 /* Title styling */
 .main-title {
     font-size: 3rem;
@@ -145,7 +144,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-
 .sidebar-menu-heading {
     font-size: 2rem !important; /* Larger font for heading */
     font-weight: bold !important; /* Bold heading */
-    color: #00d08e !important; /* White color */
+    color: #00d08e !important; 
     margin-bottom: 20px; /* Spacing below heading */
 }
 
@@ -171,10 +170,58 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stHeader"], [data-
 </style>
 """, unsafe_allow_html=True)
 
+#############################
+#     SENTIMENT BAR HELPER
+#############################
+def display_sentiment_bar(polarity_score: float):
+    """
+    Displays a horizontal bar ~600px wide from -1.0 (red) to +1.0 (blue)
+    with a white marker for the polarity_score, 
+    and labels for -1.0 and +1.0 below the bar.
+    """
+    # Bar width in pixels
+    bar_width = 700
+
+    # Convert polarity range [-1..+1] to [0..bar_width]
+    position = int((polarity_score + 1) / 2 * bar_width)
+    if position < 0:
+        position = 0
+    elif position > bar_width:
+        position = bar_width
+
+    st.markdown(
+        f"""
+        <div style="width:{bar_width}px; height:20px; 
+                    background: linear-gradient(to right, red, purple, blue); 
+                    position: relative; 
+                    margin:20px auto; /* center horizontally + margin from top */
+                    border-radius: 10px; /* Rounded corners */
+                    overflow: hidden;">
+            <!-- Marker -->
+            <div style="position: absolute; 
+                        left: {position}px; 
+                        top: 0; 
+                        width:3px; 
+                        height:100%; 
+                        background: white;">
+            </div>
+        </div>
+        <!-- Show labels for -1.0 and +1.0 below the bar -->
+        <div style="width:{bar_width}px; margin:0 auto; display:flex; justify-content:space-between; font-size:0.9rem;">
+            <span style="color:red;">-1.0</span>
+            <span style="color:blue;">+1.0</span>
+        </div>
+        <p style="text-align:center; font-size:0.9rem; margin-top:5px;">
+           Sentiment Scores: {polarity_score:.2f}
+        </p>
+        """,
+        unsafe_allow_html=True
+    )
+
 # Sidebar Menu Header
 st.sidebar.markdown("<div class='sidebar-menu-heading'>Menu</div>", unsafe_allow_html=True)
 
-# Sidebar Navigation Buttons
+# Keep track of which page is selected
 if "page" not in st.session_state:
     st.session_state.page = "detector"  # Default page
 
@@ -184,7 +231,9 @@ if st.sidebar.button("Suicide Ideation Detector", key="detector_button"):
 if st.sidebar.button("About", key="about_button"):
     st.session_state.page = "about"
 
-# Display Content Based on Navigation
+#############################
+#      HOME / DETECTOR
+#############################
 if st.session_state.page == "detector":
     st.markdown('<div class="main-title">Suicide Ideation Detector</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-text">Predict text with selected models: GRU or LR</div>', unsafe_allow_html=True)
@@ -193,7 +242,6 @@ if st.session_state.page == "detector":
     user_input = st.text_input("Enter your input text:", placeholder="Type something here...")
     model = st.selectbox("Select Model:", ["GRU", "LR"])
 
-    # Prediction Button and Output Section
     if st.button("Run Detection", key="predict", help="Click to make a prediction"):
         if not api_url:
             st.error("API URL not available. Check your setup.")
@@ -201,30 +249,37 @@ if st.session_state.page == "detector":
             st.warning("Please enter a valid input text.")
         else:
             payload = {"model": model.lower(), "message": user_input}
-
             try:
                 response = requests.post(api_url, json=payload)
                 if response.status_code == 200:
+                    # We expect JSON with keys: 
+                    #  { "prediction_text": "...", "polarity_score": ... }
                     response_data = response.json()
-                    prediction = response_data.get("response", "No response received.")
                     
-                    # Choose color based on "Suicide" presence
-                    # e.g., if "Suicide Ideation" is in the text => RED, else GREEN
-                    if "non-suicide" in prediction.lower():
+                    # Extract the needed fields
+                    prediction_text = response_data.get("prediction_text", "No response received.")
+                    polarity_score = response_data.get("polarity_score", 0.0)
+
+                    # Color-coded text based on suicide / non-suicide
+                    if "non-suicide" in prediction_text.lower():
                         color = "#00d08e"  # green
                     else:
                         color = "#FF0000"  # red
 
+                    # Show classification result
                     st.markdown(
                         f"""
                         <div class="prediction-box" style="color:{color};">
-                            <strong>Prediction:</strong> {prediction}
+                            <strong>Prediction:</strong> {prediction_text}
                         </div>
                         """,
                         unsafe_allow_html=True,
                     )
+
+                    # Show horizontal bar for sentiment (assuming the backend returns polarity_score)
+                    display_sentiment_bar(polarity_score)
+
                 else:
-                    # Non-200 response => show token message
                     st.error("The token is now invalid please refresh and get the new api token")
 
             except requests.exceptions.RequestException:
@@ -236,63 +291,29 @@ if st.session_state.page == "detector":
 elif st.session_state.page == "about":
     st.markdown("""
     <style>
-    /* Overall background */
+    /* Additional About Page styling */
     html, body, [data-testid="stAppViewContainer"] {
         background-color: black !important;
         color: white !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
-
-    /* Sidebar container styling */
-    [data-testid="stSidebar"] {
-        background-color: #11111 !important;
-        color: #D4D4D4 !important;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        padding: 20px !important;
-    }
-
-    /* Sidebar buttons */
-    [data-testid="stSidebar"] div.stButton > button {
-        background-color: black !important;
-        color: white !important;
-        font-size: 1.2rem !important;
-        font-weight: bold !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 10px 20px !important;
-        margin-bottom: 8px !important;
-        transition: all 0.3s ease-in-out;
-    }
-
-    [data-testid="stSidebar"] div.stButton > button:hover {
-        background-color: white !important;
-        color: black !important; /* Ensure text is black on hover */
-        transform: scale(1.03);
-    }
-
-    /* About page headings */
-    h1.about-heading {
-        color: #00d08e !important; /* Green for main heading */
+    .about-heading {
+        color: #00d08e !important;
         font-weight: bold !important;
         margin-top: 20px !important;
         margin-bottom: 10px !important;
     }
-
-    h2.about-subheading, h3.about-subheading {
-        color: white !important; /* White for smaller headings */
+    .about-subheading {
+        color: white !important;
         font-weight: bold !important;
         margin-top: 15px !important;
         margin-bottom: 8px !important;
     }
-
-    /* Green and bold */
     .about-content em {
         font-style: normal !important;
-        color: #00d08e !important; /* Green color */
-        font-weight: bold !important; /* Bold for emphasis */
+        color: #00d08e !important;
+        font-weight: bold !important;
     }
-
-    /* Hyperlinks */
     div[data-testid="stAppViewContainer"] a {
         color: #00d08e !important;
         text-decoration: none !important;
@@ -301,9 +322,9 @@ elif st.session_state.page == "about":
         text-decoration: underline !important;
     }
     .about-content.hotline-highlight {
-    color: #00d08e !important; /* Green text */
-    font-weight: bold !important; /* Bold text */
-    font-style: normal !important; /* Normal style (not italic) */
+        color: #00d08e !important;
+        font-weight: bold !important;
+        font-style: normal !important;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -322,7 +343,7 @@ elif st.session_state.page == "about":
     1. Go to <span class="about-content"><em>Suicide Ideation Detector</em></span> (in the navigation sidebar).  
     2. Type in the text you want to analyze.  
     3. Select a model (<span class="about-content"><em>GRU</em></span> or <span class="about-content"><em>LR</em></span>).  
-    4. Click <span class="about-content"><em>Get Prediction</em></span> to see the result.
+    4. Click <span class="about-content"><em>Run Detection</em></span> to see the result.
     """, unsafe_allow_html=True)
 
     st.markdown('<h2 class="about-subheading">Disclaimer</h2>', unsafe_allow_html=True)
@@ -339,4 +360,3 @@ elif st.session_state.page == "about":
         - Malaysia 15999 (Talian Kasih) or <span class="about-content hotline-highlight">Befrienders KL</span>: +603-7627 2929
         - International: [Visit Befrienders Worldwide](https://www.befrienders.org)
     """, unsafe_allow_html=True)
-
