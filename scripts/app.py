@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Ngrok URL
-api_url = 'https://8c36-35-237-177-226.ngrok-free.app/chat'
+api_url = 'https://2bc8-34-13-166-176.ngrok-free.app/chat'
 
 #############################
 #       PAGE CONFIG
@@ -119,7 +119,6 @@ div.stButton button:hover {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
-    color: #00d08e;
     margin-top: 1rem;
 }
 </style>
@@ -187,7 +186,7 @@ if st.sidebar.button("About", key="about_button"):
 
 # Display Content Based on Navigation
 if st.session_state.page == "detector":
-    st.markdown('<div class="main-title">Suicide Ideation Predictor</div>', unsafe_allow_html=True)
+    st.markdown('<div class="main-title">Suicide Ideation Detector</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-text">Predict text with selected models: GRU or LR</div>', unsafe_allow_html=True)
 
     st.write("### Input Section")
@@ -195,7 +194,7 @@ if st.session_state.page == "detector":
     model = st.selectbox("Select Model:", ["GRU", "LR"])
 
     # Prediction Button and Output Section
-    if st.button("Get Prediction", key="predict", help="Click to make a prediction"):
+    if st.button("Run Detection", key="predict", help="Click to make a prediction"):
         if not api_url:
             st.error("API URL not available. Check your setup.")
         elif not user_input.strip():
@@ -208,8 +207,20 @@ if st.session_state.page == "detector":
                 if response.status_code == 200:
                     response_data = response.json()
                     prediction = response_data.get("response", "No response received.")
+                    
+                    # Choose color based on "Suicide" presence
+                    # e.g., if "Suicide Ideation" is in the text => RED, else GREEN
+                    if "non-suicide" in prediction.lower():
+                        color = "#00d08e"  # green
+                    else:
+                        color = "#FF0000"  # red
+
                     st.markdown(
-                        f'<div class="prediction-box"><strong>Prediction:</strong> {prediction}</div>',
+                        f"""
+                        <div class="prediction-box" style="color:{color};">
+                            <strong>Prediction:</strong> {prediction}
+                        </div>
+                        """,
                         unsafe_allow_html=True,
                     )
                 else:
@@ -234,7 +245,7 @@ elif st.session_state.page == "about":
 
     /* Sidebar container styling */
     [data-testid="stSidebar"] {
-        background-color: #1E1E1E !important;
+        background-color: #11111 !important;
         color: #D4D4D4 !important;
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         padding: 20px !important;
