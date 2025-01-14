@@ -3,7 +3,7 @@ import streamlit as st
 import requests
 
 # Ngrok URL - your Flask backend
-api_url = 'https://92b5-34-19-59-54.ngrok-free.app/chat'
+api_url = 'https://4b76-34-16-133-230.ngrok-free.app/chat'
 
 #############################
 #       PAGE CONFIG
